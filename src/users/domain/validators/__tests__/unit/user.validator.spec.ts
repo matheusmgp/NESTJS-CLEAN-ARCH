@@ -92,4 +92,44 @@ describe('UserValidator unit tests ', () => {
       expect(sut.validatedData).toStrictEqual(new UserRules(props));
     });
   });
+  describe('Email field', () => {
+    it('Invalidation cases for email field', () => {
+      let isValid = sut.validate(null);
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.email).toStrictEqual([
+        'email must be a string',
+        'email should not be empty',
+        'email must be shorter than or equal to 100 characters',
+      ]);
+
+      isValid = sut.validate({ ...UserDataBuilder({}), email: '' as any });
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.email).toStrictEqual(['email should not be empty']);
+
+      isValid = sut.validate({
+        ...UserDataBuilder({}),
+        email: 'long email test'.repeat(101),
+      });
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.email).toStrictEqual([
+        'email must be shorter than or equal to 100 characters',
+      ]);
+      isValid = sut.validate({
+        ...UserDataBuilder({}),
+        email: 10 as any,
+      });
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.email).toStrictEqual([
+        'email must be a string',
+        'email must be shorter than or equal to 100 characters',
+      ]);
+    });
+    it('Valid cases for email field', () => {
+      const props = UserDataBuilder({});
+      const isValid = sut.validate(props);
+      expect(isValid).toBeTruthy();
+      expect(sut.errors).toBeNull();
+      expect(sut.validatedData).toStrictEqual(new UserRules(props));
+    });
+  });
 });
