@@ -44,7 +44,7 @@ describe('UserValidator unit tests ', () => {
     });
   });
   describe('Password field', () => {
-    it('Invalidation cases for password field', () => {
+    it('InValid cases for password field', () => {
       let isValid = sut.validate(null);
       expect(isValid).toBeFalsy();
       expect(sut.errors.password).toStrictEqual([
@@ -79,7 +79,7 @@ describe('UserValidator unit tests ', () => {
     });
   });
   describe('Email field', () => {
-    it('Invalidation cases for email field', () => {
+    it('InValid cases for email field', () => {
       let isValid = sut.validate(null);
       expect(isValid).toBeFalsy();
       expect(sut.errors.email).toStrictEqual([
@@ -123,6 +123,31 @@ describe('UserValidator unit tests ', () => {
       expect(isValid).toBeTruthy();
       expect(sut.errors).toBeNull();
       expect(sut.validatedData).toStrictEqual(new UserRules(props));
+    });
+  });
+
+  describe('CreatedAt field', () => {
+    it('InValid cases for createdAt field', () => {
+      let isValid = sut.validate(null);
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.createdAt).toBeUndefined();
+
+      isValid = sut.validate({
+        ...UserDataBuilder({}),
+        createdAt: 'randon string' as any,
+      });
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.createdAt).toStrictEqual([
+        'createdAt must be a Date instance',
+      ]);
+      isValid = sut.validate({
+        ...UserDataBuilder({}),
+        createdAt: 0 as any,
+      });
+      expect(isValid).toBeFalsy();
+      expect(sut.errors.createdAt).toStrictEqual([
+        'createdAt must be a Date instance',
+      ]);
     });
   });
 });
