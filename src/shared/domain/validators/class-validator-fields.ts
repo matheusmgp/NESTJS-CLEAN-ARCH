@@ -4,8 +4,9 @@ import { FieldsErrors, IValidatorFields } from './validator-fields.interface';
 export abstract class ClassValidatorFields<Props>
   implements IValidatorFields<Props>
 {
-  errors: FieldsErrors;
-  validatedData: Props;
+  errors: FieldsErrors = null;
+  validatedData: Props = null;
+
   validate(data: any): boolean {
     const errors = validateSync(data);
     if (errors.length) {
