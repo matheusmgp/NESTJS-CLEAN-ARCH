@@ -100,7 +100,7 @@ describe('UserEntity integration tests', () => {
     it('should throw an error when instantiating a user with invalid createdAt', () => {
       let props: UserProps = {
         ...UserDataBuilder({}),
-        createdAt: 'notemailstring' as any,
+        createdAt: 'notValidEmail' as any,
       };
       expect(() => {
         new UserEntity(props);
@@ -112,6 +112,13 @@ describe('UserEntity integration tests', () => {
       expect(() => {
         new UserEntity(props);
       }).toThrowError(EntityValidationError);
+    });
+    it('should instantiate a valid user', () => {
+      expect.assertions(0);
+      const props: UserProps = {
+        ...UserDataBuilder({}),
+      };
+      new UserEntity(props);
     });
   });
 });
