@@ -42,13 +42,6 @@ describe('UserValidator unit tests ', () => {
         'name must be shorter than or equal to 100 characters',
       ]);
     });
-    it('Valid cases for name field', () => {
-      const props = UserDataBuilder({});
-      const isValid = sut.validate(props);
-      expect(isValid).toBeTruthy();
-      expect(sut.errors).toBeNull();
-      expect(sut.validatedData).toStrictEqual(new UserRules(props));
-    });
   });
   describe('Password field', () => {
     it('Invalidation cases for password field', () => {
@@ -83,13 +76,6 @@ describe('UserValidator unit tests ', () => {
         'password must be a string',
         'password must be shorter than or equal to 100 characters',
       ]);
-    });
-    it('Valid cases for password field', () => {
-      const props = UserDataBuilder({});
-      const isValid = sut.validate(props);
-      expect(isValid).toBeTruthy();
-      expect(sut.errors).toBeNull();
-      expect(sut.validatedData).toStrictEqual(new UserRules(props));
     });
   });
   describe('Email field', () => {
@@ -128,7 +114,10 @@ describe('UserValidator unit tests ', () => {
         'email must be shorter than or equal to 100 characters',
       ]);
     });
-    it('Valid cases for email field', () => {
+  });
+
+  describe('Name,Email,Password field ', () => {
+    it('Valid cases for UserEntity', () => {
       const props = UserDataBuilder({});
       const isValid = sut.validate(props);
       expect(isValid).toBeTruthy();
