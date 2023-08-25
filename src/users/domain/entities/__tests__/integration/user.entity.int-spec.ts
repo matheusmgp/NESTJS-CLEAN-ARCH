@@ -66,5 +66,52 @@ describe('UserEntity integration tests', () => {
         new UserEntity(props);
       }).toThrowError(EntityValidationError);
     });
+    it('should throw an error when instantiating a user with invalid password', () => {
+      let props: UserProps = {
+        ...UserDataBuilder({}),
+        password: null,
+      };
+      expect(() => {
+        new UserEntity(props);
+      }).toThrowError(EntityValidationError);
+
+      props = {
+        ...UserDataBuilder({}),
+        password: '',
+      };
+      expect(() => {
+        new UserEntity(props);
+      }).toThrowError(EntityValidationError);
+      props = {
+        ...UserDataBuilder({}),
+        password: 's'.repeat(101),
+      };
+      expect(() => {
+        new UserEntity(props);
+      }).toThrowError(EntityValidationError);
+      props = {
+        ...UserDataBuilder({}),
+        password: 10 as any,
+      };
+      expect(() => {
+        new UserEntity(props);
+      }).toThrowError(EntityValidationError);
+    });
+    it('should throw an error when instantiating a user with invalid createdAt', () => {
+      let props: UserProps = {
+        ...UserDataBuilder({}),
+        createdAt: 'notemailstring' as any,
+      };
+      expect(() => {
+        new UserEntity(props);
+      }).toThrowError(EntityValidationError);
+      props = {
+        ...UserDataBuilder({}),
+        createdAt: 10 as any,
+      };
+      expect(() => {
+        new UserEntity(props);
+      }).toThrowError(EntityValidationError);
+    });
   });
 });
