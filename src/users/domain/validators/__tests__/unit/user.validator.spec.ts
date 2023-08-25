@@ -115,7 +115,6 @@ describe('UserValidator unit tests ', () => {
       ]);
     });
   });
-
   describe('Name,Email,Password field ', () => {
     it('Valid cases for UserEntity', () => {
       const props = UserDataBuilder({});
@@ -125,7 +124,6 @@ describe('UserValidator unit tests ', () => {
       expect(sut.validatedData).toStrictEqual(new UserRules(props));
     });
   });
-
   describe('CreatedAt field', () => {
     it('InValid cases for createdAt field', () => {
       let isValid = sut.validate(null);
