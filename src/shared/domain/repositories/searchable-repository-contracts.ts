@@ -98,6 +98,7 @@ export class SearchResult<E extends BaseEntity, Filter = string> {
   readonly sort: string | null;
   readonly sortDir: string | null;
   readonly filter: Filter | null;
+
   constructor(props: SearchResultProps<E, Filter>) {
     this.items = props.items;
     this.total = props.total;
@@ -123,8 +124,9 @@ export class SearchResult<E extends BaseEntity, Filter = string> {
 }
 export interface ISearchableRepository<
   E extends BaseEntity,
-  SearchInput,
-  SearchOutPut,
+  Filter = string,
+  SearchInput = SearchParams,
+  SearchOutPut = SearchResult<E, Filter>,
 > extends IRepository<E> {
-  search(props: SearchParams): Promise<SearchOutPut>;
+  search(props: SearchInput): Promise<SearchOutPut>;
 }
