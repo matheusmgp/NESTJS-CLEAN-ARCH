@@ -128,5 +128,6 @@ export interface ISearchableRepository<
   SearchInput = SearchParams,
   SearchOutPut = SearchResult<E, Filter>,
 > extends IRepository<E> {
+  sortableFields: string[];
   search(props: SearchInput): Promise<SearchOutPut>;
 }
