@@ -25,7 +25,6 @@ export abstract class InMemoryRepository<E extends BaseEntity>
     const index = this.items.findIndex(item => item.id === id);
     this.items.splice(index, 1);
   }
-
   protected async getById(id: string): Promise<E> {
     const _id = `${id}`;
     const entity = this.items.find(e => e.id == _id);
