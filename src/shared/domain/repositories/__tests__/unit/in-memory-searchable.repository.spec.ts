@@ -1,5 +1,9 @@
 import { BaseEntity } from '@/shared/domain/entities/entity';
 import { InMemorySearchableRepository } from '../../in-memory-searchable.repository';
+import {
+  SearchParams,
+  SearchResult,
+} from '../../searchable-repository-contracts';
 
 type StubEntityProps = {
   name: string;
@@ -13,6 +17,7 @@ class StubInMemorySearchableRepository extends InMemorySearchableRepository<Stub
     items: StubEntity[],
     filter: string | null,
   ): Promise<StubEntity[]> {
+    console.log('filter', filter);
     if (!filter) return items;
 
     return items.filter(item => {
@@ -93,9 +98,76 @@ describe('InMemorySearchable Repository unit tests', () => {
       expect(itemsPaginated).toStrictEqual([items[2], items[3]]);
       itemsPaginated = await sut['applyPaginate'](items, 3, 2);
       expect(itemsPaginated).toStrictEqual([items[4]]);
+      itemsPaginated = await sut['applyPaginate'](items, 4, 2);
+      expect(itemsPaginated).toStrictEqual([]);
     });
   });
   describe('search method', () => {
-    it('', () => {});
+    it('should search items with only pagination applied', async () => {
+      const entity = new StubEntity({ name: 'test', price: 100 });
+      const items = Array<StubEntity>(16).fill(entity);
+      sut.items = items;
+
+      const params = await sut.search(new SearchParams());
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: Array<StubEntity>(15).fill(entity),
+          total: 16,
+          currentPage: 1,
+          perPage: 15,
+          sort: null,
+          sortDir: null,
+          filter: null,
+        }),
+      );
+    });
+    it('should search items with filter and  pagination applied', async () => {
+      const items = [
+        new StubEntity({ name: 'test', price: 50 }),
+        new StubEntity({ name: 'a', price: 50 }),
+        new StubEntity({ name: 'TEST', price: 50 }),
+        new StubEntity({ name: 'TeSt', price: 50 }),
+      ];
+      sut.items = items;
+
+      let params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          filter: 'TEST',
+        }),
+      );
+
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[0], items[2]],
+          total: 3,
+          currentPage: 1,
+          perPage: 2,
+          sort: null,
+          sortDir: null,
+          filter: 'TEST',
+        }),
+      );
+      params = await sut.search(
+        new SearchParams({
+          page: 2,
+          perPage: 2,
+          filter: 'TEST',
+        }),
+      );
+
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[3]],
+          total: 3,
+          currentPage: 2,
+          perPage: 2,
+          sort: null,
+          sortDir: null,
+          filter: 'TEST',
+        }),
+      );
+    });
   });
 });
