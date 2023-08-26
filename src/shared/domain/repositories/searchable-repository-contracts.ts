@@ -17,12 +17,12 @@ export class SearchParams {
   protected _sortDir: SortDirection | null;
   protected _filter: string | null;
 
-  constructor(props: SearchProps) {
-    this._page = props.page;
-    this._perPage = props.perPage;
-    this._sort = props.sort;
-    this._sortDir = props.sortDir;
-    this._filter = props.filter;
+  constructor(props: SearchProps = {}) {
+    this.page = props.page;
+    this.perPage = props.perPage;
+    this.sort = props.sort;
+    this.sortDir = props.sortDir;
+    this.filter = props.filter;
   }
   get page() {
     return this._page;
@@ -35,8 +35,7 @@ export class SearchParams {
     return this._perPage;
   }
   private set perPage(value: number) {
-    const _perPage = +value;
-    this._perPage = this.returnNumberValue(_perPage);
+    this._perPage = this.returnNumberValuePerPage(value);
   }
   get sort() {
     return this._sort;
@@ -68,6 +67,16 @@ export class SearchParams {
     if (Number.isNaN(value) || value <= 0 || parseInt(value as any) != value)
       value = 1;
     return value;
+  }
+  private returnNumberValuePerPage(value: number) {
+    let _perPage = value === (true as any) ? 15 : +value;
+    if (
+      Number.isNaN(_perPage) ||
+      _perPage <= 0 ||
+      parseInt(_perPage as any) != _perPage
+    )
+      _perPage = 15;
+    return _perPage;
   }
 }
 export interface ISearchableRepository<
