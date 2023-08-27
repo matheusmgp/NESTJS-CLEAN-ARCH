@@ -10,16 +10,6 @@ export type SearchProps<Filter = string> = {
   sortDir?: SortDirection | null;
   filter?: Filter;
 };
-export type SearchResultProps<E extends BaseEntity, Filter> = {
-  items: E[];
-  total: number;
-  currentPage: number;
-  perPage: number;
-  sort: string | null;
-  sortDir: string | null;
-  filter: Filter | null;
-};
-
 export class SearchParams<Filter = string> {
   protected _page: number;
   protected _perPage = 15;
@@ -91,6 +81,15 @@ export class SearchParams<Filter = string> {
     return _perPage;
   }
 }
+export type SearchResultProps<E extends BaseEntity, Filter> = {
+  items: E[];
+  total: number;
+  currentPage: number;
+  perPage: number;
+  sort: string | null;
+  sortDir: string | null;
+  filter: Filter | null;
+};
 export class SearchResult<E extends BaseEntity, Filter = string> {
   readonly items: E[];
   readonly total: number;
