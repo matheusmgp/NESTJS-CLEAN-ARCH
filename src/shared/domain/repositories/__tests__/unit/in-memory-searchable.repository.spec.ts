@@ -166,7 +166,7 @@ describe('InMemorySearchable Repository unit tests', () => {
         }),
       );
     });
-    it('should search items with filter ,sort and pagination applied', async () => {
+    it('should search items sort and pagination applied', async () => {
       const items = [
         new StubEntity({ name: 'b', price: 50 }),
         new StubEntity({ name: 'a', price: 50 }),
@@ -251,6 +251,76 @@ describe('InMemorySearchable Repository unit tests', () => {
           sort: 'name',
           sortDir: 'asc',
           filter: null,
+        }),
+      );
+    });
+    it('should search items with filter,sort and pagination applied', async () => {
+      const items = [
+        new StubEntity({ name: 'b', price: 50 }),
+        new StubEntity({ name: 'a', price: 50 }),
+        new StubEntity({ name: 'd', price: 50 }),
+        new StubEntity({ name: 'A', price: 50 }),
+        new StubEntity({ name: 'c', price: 50 }),
+      ];
+      sut.items = items;
+
+      let params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          sort: 'name',
+          filter: 'a',
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[1], items[3]],
+          total: 2,
+          currentPage: 1,
+          perPage: 2,
+          sort: 'name',
+          sortDir: 'desc',
+          filter: 'a',
+        }),
+      );
+      params = await sut.search(
+        new SearchParams({
+          page: 1,
+          perPage: 2,
+          sort: 'name',
+          sortDir: 'asc',
+          filter: 'a',
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [items[3], items[1]],
+          total: 2,
+          currentPage: 1,
+          perPage: 2,
+          sort: 'name',
+          sortDir: 'asc',
+          filter: 'a',
+        }),
+      );
+      params = await sut.search(
+        new SearchParams({
+          page: 2,
+          perPage: 2,
+          sort: 'name',
+          sortDir: 'asc',
+          filter: 'a',
+        }),
+      );
+      expect(params).toStrictEqual(
+        new SearchResult({
+          items: [],
+          total: 2,
+          currentPage: 2,
+          perPage: 2,
+          sort: 'name',
+          sortDir: 'asc',
+          filter: 'a',
         }),
       );
     });
