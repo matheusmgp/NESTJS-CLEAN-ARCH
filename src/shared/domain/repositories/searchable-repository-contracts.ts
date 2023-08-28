@@ -8,7 +8,7 @@ export type SearchProps<Filter = string> = {
   perPage?: number;
   sort?: string | null;
   sortDir?: SortDirection | null;
-  filter?: Filter;
+  filter?: Filter | null;
 };
 export class SearchParams<Filter = string> {
   protected _page: number;

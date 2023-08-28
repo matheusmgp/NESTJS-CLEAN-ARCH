@@ -3,7 +3,7 @@ import { InMemoryUserRepository } from '@/users/infrastructure/database/in-memor
 import { IHashProvider } from '@/shared/application/providers/hash-provider';
 import { BcryptJsHashProvider } from '@/users/infrastructure/providers/hash-provider/bcryptjs-hash.provider';
 import { UserDataBuilder } from '@/users/domain/testing/helpers/user-data-builder';
-import { BadRequestError } from '@/users/application/errors/bad-request-error';
+import { BadRequestError } from '@/shared/application/errors/bad-request-error';
 import { ConflictError } from '@/shared/domain/errors/conflict-error';
 
 describe('SignupUseCase unit tests', () => {
