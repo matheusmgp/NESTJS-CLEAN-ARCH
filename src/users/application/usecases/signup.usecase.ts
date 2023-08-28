@@ -2,6 +2,7 @@ import { IUserRepository } from '@/users/domain/repositories/user.repository';
 import { BadRequestError } from '../errors/bad-request-error';
 import { UserEntity } from '@/users/domain/entities/user.entity';
 import { IHashProvider } from '@/shared/application/providers/hash-provider';
+import { UserOutput } from '../dtos/user-output';
 
 /* eslint-disable @typescript-eslint/no-namespace */
 export namespace SignupUseCase {
@@ -10,19 +11,13 @@ export namespace SignupUseCase {
     email: string;
     password: string;
   };
-  export type Output = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-  };
+
   export class UseCase {
     constructor(
       private readonly userReporitoy: IUserRepository.Repository,
       private readonly bcryptProvider: IHashProvider,
     ) {}
-    async execute(input: Input): Promise<Output> {
+    async execute(input: Input): Promise<UserOutput> {
       const { name, password, email } = input;
       if (!name || !password || !email)
         throw new BadRequestError(`Input data not provided`);

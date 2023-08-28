@@ -1,4 +1,3 @@
-import { IUserRepository } from '@/users/domain/repositories/user.repository';
 import { SignupUseCase } from '../../signup.usecase';
 import { InMemoryUserRepository } from '@/users/infrastructure/database/in-memory/repositories/user-in-memory.repository';
 import { IHashProvider } from '@/shared/application/providers/hash-provider';
