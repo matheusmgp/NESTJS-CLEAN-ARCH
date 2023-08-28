@@ -17,7 +17,7 @@ export class InMemoryUserRepository
     return entity;
   }
   async emailExists(email: string): Promise<void> {
-    const entity = this.items.find(e => e.email == email);
+    const entity = this.items.find(e => e.email === email);
     if (entity) throw new ConflictError(`Email already exists`);
   }
   protected async applyFilter(
