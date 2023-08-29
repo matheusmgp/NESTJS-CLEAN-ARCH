@@ -77,7 +77,7 @@ describe('GetUsersListUseCase unit tests', () => {
       new UserEntity(UserDataBuilder({ name: 'c' })),
     ];
     repository.items = items;
-    const output = await sut.execute({
+    let output = await sut.execute({
       page: 1,
       perPage: 2,
       sort: 'name',
@@ -89,6 +89,48 @@ describe('GetUsersListUseCase unit tests', () => {
       items: [items[1].toJSON(), items[2].toJSON()],
       lastPage: 2,
       perPage: 2,
+      total: 3,
+    });
+    output = await sut.execute({
+      page: 2,
+      perPage: 2,
+      sort: 'name',
+      sortDir: 'asc',
+      filter: 'a',
+    });
+    expect(output).toStrictEqual({
+      currentPage: 2,
+      items: [items[0].toJSON()],
+      lastPage: 2,
+      perPage: 2,
+      total: 3,
+    });
+    output = await sut.execute({
+      page: 3,
+      perPage: 2,
+      sort: 'name',
+      sortDir: 'asc',
+      filter: 'a',
+    });
+    expect(output).toStrictEqual({
+      currentPage: 3,
+      items: [],
+      lastPage: 2,
+      perPage: 2,
+      total: 3,
+    });
+    output = await sut.execute({
+      page: 1,
+      perPage: 3,
+      sort: 'name',
+      sortDir: 'desc',
+      filter: 'a',
+    });
+    expect(output).toStrictEqual({
+      currentPage: 1,
+      items: [items[0].toJSON(), items[2].toJSON(), items[1].toJSON()],
+      lastPage: 1,
+      perPage: 3,
       total: 3,
     });
   });
