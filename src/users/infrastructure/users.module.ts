@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
+
 import { UsersController } from './users.controller';
 import { SignupUseCase } from '../application/usecases/signup.usecase';
 import { InMemoryUserRepository } from './database/in-memory/repositories/user-in-memory.repository';
@@ -16,7 +16,6 @@ import { UpdatePasswordUseCase } from '../application/usecases/update-password.u
 @Module({
   controllers: [UsersController],
   providers: [
-    UsersService,
     {
       provide: 'UseRepository',
       useClass: InMemoryUserRepository,
