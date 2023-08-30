@@ -69,7 +69,11 @@ describe('UpdatePasswordUseCase unit tests', () => {
       password: 'new-pass',
       oldPassword: '202020',
     });
-
+    const checkNewPassword = await hashProvider.compareHash(
+      'new-pass',
+      result.password,
+    );
+    expect(checkNewPassword).toBeTruthy();
     expect(result).toMatchObject({
       id: items[0].id,
       name: items[0].name,
