@@ -6,6 +6,11 @@ import { SigninDto } from '../../dtos/signin.dto';
 import { SigninUseCase } from '@/users/application/usecases/signin.usecase';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
 import { UpdateUserUseCase } from '@/users/application/usecases/update-user.usecase';
+import { UpdatePasswordDto } from '../../dtos/update-password.dto';
+import { UpdatePasswordUseCase } from '@/users/application/usecases/update-password.usecase';
+import { GetUserUseCase } from '@/users/application/usecases/getuser.usecase';
+import { ListUsersUseCase } from '@/users/application/usecases/get-users-list.usecase';
+import { ListUsersDto } from '../../dtos/get-users-list.dto';
 
 describe('UsersController unit test', () => {
   let sut: UsersController;
@@ -74,5 +79,67 @@ describe('UsersController unit test', () => {
       id,
       ...input,
     });
+  });
+  it('should update a password', async () => {
+    const input: UpdatePasswordDto = {
+      password: 'newpass',
+      oldPassword: 'oldpass',
+    };
+    const output: UpdatePasswordUseCase.Output = props;
+    const mockUpdatePasswordUseCase = {
+      execute: jest.fn().mockReturnValue(Promise.resolve(output)),
+    };
+    sut['updatePasswordUseCase'] = mockUpdatePasswordUseCase as any;
+
+    const result = await sut.updatePassword(props.id, input);
+    expect(result).toStrictEqual(output);
+    expect(mockUpdatePasswordUseCase.execute).toHaveBeenCalledWith({
+      id,
+      ...input,
+    });
+  });
+  it('should findOne user', async () => {
+    const output: GetUserUseCase.Output = props;
+    const mockGetUserUseCase = {
+      execute: jest.fn().mockReturnValue(Promise.resolve(output)),
+    };
+    sut['getUserUseCase'] = mockGetUserUseCase as any;
+
+    const result = await sut.findOne(props.id);
+    expect(result).toStrictEqual(output);
+    expect(mockGetUserUseCase.execute).toHaveBeenCalledWith({ id });
+  });
+  it('should remove an user', async () => {
+    const output = undefined;
+    const mockDeleteUserUseCase = {
+      execute: jest.fn().mockReturnValue(Promise.resolve(output)),
+    };
+    sut['deleteUserUseCase'] = mockDeleteUserUseCase as any;
+    await sut.remove(props.id);
+    expect(mockDeleteUserUseCase.execute).toHaveBeenCalledWith({ id });
+  });
+  it('should search for a list of users', async () => {
+    const searchParams: ListUsersDto = {
+      page: 1,
+      perPage: 1,
+      sort: null,
+      sortDir: null,
+      filter: null,
+    };
+    const output: ListUsersUseCase.Output = {
+      items: [props],
+      total: 1,
+      currentPage: 1,
+      lastPage: 1,
+      perPage: 1,
+    };
+    const mockListUsersUseCase = {
+      execute: jest.fn().mockReturnValue(Promise.resolve(output)),
+    };
+    sut['listUsersUseCase'] = mockListUsersUseCase as any;
+
+    const result = await sut.search(searchParams);
+    expect(result).toStrictEqual(output);
+    expect(mockListUsersUseCase.execute).toHaveBeenCalledWith(searchParams);
   });
 });
