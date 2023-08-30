@@ -1,7 +1,6 @@
 import { IUserRepository } from '@/users/domain/repositories/user.repository';
 import { UserOutput, UserOutputMapper } from '../dtos/user-output';
 import { IUseCase } from '@/shared/application/usecases/use-case';
-import { BadRequestError } from '@/shared/application/errors/bad-request-error';
 import { InvalidPasswordError } from '@/shared/application/errors/invalid-password-error';
 import { IHashProvider } from '@/shared/application/providers/hash-provider';
 
