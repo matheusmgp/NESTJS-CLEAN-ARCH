@@ -55,8 +55,14 @@ export class UserPrismaRepository implements IUserRepository.Repository {
       data: entity,
     });
   }
-  update(entity: UserEntity): Promise<void> {
-    throw new Error('Method not implemented.');
+  async update(entity: UserEntity): Promise<void> {
+    await this._get(entity.id);
+    await this.prismaService.user.update({
+      data: entity.toJSON(),
+      where: {
+        id: entity.id,
+      },
+    });
   }
   async findById(id: string): Promise<UserEntity> {
     return this._get(id);
@@ -65,7 +71,7 @@ export class UserPrismaRepository implements IUserRepository.Repository {
     const models = await this.prismaService.user.findMany({});
     return models.map(model => UserModelMapper.toEntity(model));
   }
-  delete(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
   findByEmail(email: string): Promise<UserEntity> {
