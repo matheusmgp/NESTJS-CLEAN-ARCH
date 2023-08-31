@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UserPrismaRepository } from '../../user-prisma.repository';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { setupPrismaTests } from '@/shared/infrastructure/database/prisma/testing/setup-prisma-tests';
 import { DatabaseModule } from '@/shared/infrastructure/database/database.module';
 import { NotFoundError } from '@/shared/domain/errors/not-found-error';
@@ -12,11 +12,10 @@ import { ConflictError } from '@/shared/domain/errors/conflict-error';
 describe('UserPrismaRespotory integration tests', () => {
   const prismaService = new PrismaClient();
   let sut: UserPrismaRepository;
-  let module: TestingModule;
 
   beforeAll(async () => {
     setupPrismaTests();
-    module = await Test.createTestingModule({
+    await Test.createTestingModule({
       imports: [DatabaseModule.forTest(prismaService)],
     }).compile();
   });
