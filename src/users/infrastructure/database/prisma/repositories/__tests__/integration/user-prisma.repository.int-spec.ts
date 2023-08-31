@@ -62,7 +62,7 @@ describe('UserPrismaRespotory integration tests', () => {
       new NotFoundError(`UserModel not found using ID ${entity.id}`),
     );
   });
-  it('should update a entity name', async () => {
+  it('should update an entity name', async () => {
     const entity = new UserEntity(UserDataBuilder({}));
     await prismaService.user.create({
       data: entity.toJSON(),
@@ -75,6 +75,25 @@ describe('UserPrismaRespotory integration tests', () => {
       },
     });
     expect(output.name).toStrictEqual('new name');
+  });
+  it('should throws NotFoundError error when entity not found on delete', async () => {
+    const entity = new UserEntity(UserDataBuilder({}));
+    expect(() => sut.delete(entity.id)).rejects.toThrow(
+      new NotFoundError(`UserModel not found using ID ${entity.id}`),
+    );
+  });
+  it('should delete an entity', async () => {
+    const entity = new UserEntity(UserDataBuilder({}));
+    await prismaService.user.create({
+      data: entity.toJSON(),
+    });
+    await sut.delete(entity.id);
+    const output = await prismaService.user.findUnique({
+      where: {
+        id: entity.id,
+      },
+    });
+    expect(output).toBeNull();
   });
   describe('UserPrismaRespotory search methods', () => {
     it('should apply only pagination when params null', async () => {

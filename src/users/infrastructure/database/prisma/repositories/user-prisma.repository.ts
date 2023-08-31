@@ -72,7 +72,12 @@ export class UserPrismaRepository implements IUserRepository.Repository {
     return models.map(model => UserModelMapper.toEntity(model));
   }
   async delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+    await this._get(id);
+    await this.prismaService.user.delete({
+      where: {
+        id,
+      },
+    });
   }
   findByEmail(email: string): Promise<UserEntity> {
     throw new Error('Method not implemented.');
