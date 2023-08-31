@@ -6,11 +6,50 @@ import { UserModelMapper } from '../models/user-model.mapper';
 
 export class UserPrismaRepository implements IUserRepository.Repository {
   constructor(private readonly prismaService: PrismaService) {}
-  sortableFields: string[];
-  search(
+  sortableFields: string[] = ['name', 'createdAt'];
+  async search(
     props: IUserRepository.SearchParams,
   ): Promise<IUserRepository.SearchResult> {
-    throw new Error('Method not implemented.');
+    const sortable = this.sortableFields?.includes(props.sort) || false;
+    const orderByField = sortable ? props.sort : 'createdAt';
+    const orderByDir = sortable ? props.sortDir : 'desc';
+
+    const count = await this.prismaService.user.count({
+      ...(props.filter && {
+        where: {
+          name: {
+            contains: props.filter,
+            mode: 'insensitive',
+          },
+        },
+      }),
+    });
+    const models = await this.prismaService.user.findMany({
+      ...(props.filter && {
+        where: {
+          name: {
+            contains: props.filter,
+            mode: 'insensitive',
+          },
+        },
+        orderBy: {
+          [orderByField]: orderByDir,
+        },
+        skip:
+          props.page && props.page > 0 ? (props.page - 1) * props.perPage : 1,
+        take: props.perPage && props.perPage > 0 ? props.perPage : 15,
+      }),
+    });
+
+    return new IUserRepository.SearchResult({
+      items: (await models).map(model => UserModelMapper.toEntity(model)),
+      total: count,
+      currentPage: props.page,
+      perPage: props.perPage,
+      sort: orderByField,
+      sortDir: orderByDir,
+      filter: props.filter,
+    });
   }
   async insert(entity: UserEntity): Promise<void> {
     await this.prismaService.user.create({
