@@ -71,18 +71,16 @@ describe('UsersController e2e tests', () => {
         'name should not be empty',
       ]);
     });
-    it('should throws exception 404 whenid not found', async () => {
+    it('should throws exception 404 when id not found', async () => {
       const res = await request(app.getHttpServer())
         .put(`/users/99999`)
-        .send({})
+        .send(updateUserDto)
         .expect(404);
       expect(res.body.statusCode).toBe(404);
-      console.log(res.body);
-      /* expect(res.body.error).toBe('Unprocessable Entity');
-      expect(res.body.message).toStrictEqual([
-        'name must be a string',
-        'name should not be empty',
-      ]);*/
+      expect(res.body.error).toBe('Not Found');
+      expect(res.body.message).toStrictEqual(
+        'UserModel not found using ID 99999',
+      );
     });
   });
 });
