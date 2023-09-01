@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictErrorFilter } from '../../conflict-error.filter';
 import { Controller, Get, INestApplication } from '@nestjs/common';
-import { ConflictError } from '@/shared/domain/errors/conflict-error';
 import request from 'supertest';
+import { NotFoundError } from '@/shared/domain/errors/not-found-error';
+import { NotFoundErrorFilter } from '../../not-found-error.filter';
 @Controller('stub')
 class StubController {
   @Get()
   index() {
-    throw new ConflictError(`Conflicting data`);
+    throw new NotFoundError(`Not Found data`);
   }
 }
-describe('ConflictErrorFilter e2e test', () => {
+describe('NotFoundErrorFilter e2e test', () => {
   let app: INestApplication;
   let module: TestingModule;
 
@@ -19,20 +19,20 @@ describe('ConflictErrorFilter e2e test', () => {
       controllers: [StubController],
     }).compile();
     app = module.createNestApplication();
-    app.useGlobalFilters(new ConflictErrorFilter());
+    app.useGlobalFilters(new NotFoundErrorFilter());
     await app.init();
   });
   afterAll(async () => {
     await module.close();
   });
   it('should be defined', () => {
-    expect(new ConflictErrorFilter()).toBeDefined();
+    expect(new NotFoundErrorFilter()).toBeDefined();
   });
-  it('should catch a ConflictError', () => {
-    return request(app.getHttpServer()).get('/stub').expect(409).expect({
-      statusCode: 409,
-      error: 'Conflict',
-      message: 'Conflicting data',
+  it('should catch a NotFoundError', () => {
+    return request(app.getHttpServer()).get('/stub').expect(404).expect({
+      statusCode: 404,
+      error: 'Not Found',
+      message: 'Not Found data',
     });
   });
 });
