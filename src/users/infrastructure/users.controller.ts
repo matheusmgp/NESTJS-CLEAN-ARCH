@@ -51,7 +51,7 @@ export class UsersController {
   static listUsersToResponse(output: ListUsersUseCase.Output) {
     return new UserCollectionPresenter(output);
   }
-  @HttpCode(200)
+  @HttpCode(201)
   @Post()
   async create(@Body() signupDto: SignupDto) {
     return UsersController.userToResponse(

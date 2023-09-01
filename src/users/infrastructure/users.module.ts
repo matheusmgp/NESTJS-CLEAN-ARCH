@@ -21,7 +21,7 @@ import { UserPrismaRepository } from './database/prisma/repositories/user-prisma
       useClass: PrismaService,
     },
     {
-      provide: 'UseRepository',
+      provide: 'UserRepository',
       useFactory: (prismaService: PrismaService) => {
         return new UserPrismaRepository(prismaService);
       },
@@ -39,7 +39,7 @@ import { UserPrismaRepository } from './database/prisma/repositories/user-prisma
       ) => {
         return new SignupUseCase.UseCase(userRepository, hashProvider);
       },
-      inject: ['UseRepository', 'HashProvider'],
+      inject: ['UserRepository', 'HashProvider'],
     },
     {
       provide: SigninUseCase.UseCase,
@@ -49,35 +49,35 @@ import { UserPrismaRepository } from './database/prisma/repositories/user-prisma
       ) => {
         return new SigninUseCase.UseCase(userRepository, hashProvider);
       },
-      inject: ['UseRepository', 'HashProvider'],
+      inject: ['UserRepository', 'HashProvider'],
     },
     {
       provide: ListUsersUseCase.UseCase,
       useFactory: (userRepository: IUserRepository.Repository) => {
         return new ListUsersUseCase.UseCase(userRepository);
       },
-      inject: ['UseRepository'],
+      inject: ['UserRepository'],
     },
     {
       provide: GetUserUseCase.UseCase,
       useFactory: (userRepository: IUserRepository.Repository) => {
         return new GetUserUseCase.UseCase(userRepository);
       },
-      inject: ['UseRepository'],
+      inject: ['UserRepository'],
     },
     {
       provide: DeleteUserUseCase.UseCase,
       useFactory: (userRepository: IUserRepository.Repository) => {
         return new DeleteUserUseCase.UseCase(userRepository);
       },
-      inject: ['UseRepository'],
+      inject: ['UserRepository'],
     },
     {
       provide: UpdateUserUseCase.UseCase,
       useFactory: (userRepository: IUserRepository.Repository) => {
         return new UpdateUserUseCase.UseCase(userRepository);
       },
-      inject: ['UseRepository'],
+      inject: ['UserRepository'],
     },
     {
       provide: UpdatePasswordUseCase.UseCase,
@@ -87,7 +87,7 @@ import { UserPrismaRepository } from './database/prisma/repositories/user-prisma
       ) => {
         return new UpdatePasswordUseCase.UseCase(userRepository, hashProvider);
       },
-      inject: ['UseRepository', 'HashProvider'],
+      inject: ['UserRepository', 'HashProvider'],
     },
   ],
 })
