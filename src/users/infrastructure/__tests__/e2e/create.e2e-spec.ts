@@ -55,5 +55,100 @@ describe('UsersController e2e tests', () => {
       const serialized = instanceToPlain(presenter);
       expect(res.body.data).toStrictEqual(serialized);
     });
+    it('should throws exception 422 when dto is empty', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/users')
+        .send({})
+        .expect(422);
+      expect(res.body.statusCode).toBe(422);
+      expect(res.body.error).toBe('Unprocessable Entity');
+      expect(res.body.message).toStrictEqual([
+        'name must be a string',
+        'name should not be empty',
+        'email must be an email',
+        'email must be a string',
+        'email should not be empty',
+        'password must be a string',
+        'password should not be empty',
+      ]);
+    });
+    it('should throws exception 422 when name field is empty', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: null,
+          email: 'a@a.com',
+          password: 'TestPassword123',
+        })
+        .expect(422);
+      expect(res.body.statusCode).toBe(422);
+      expect(res.body.error).toBe('Unprocessable Entity');
+      expect(res.body.message).toStrictEqual([
+        'name must be a string',
+        'name should not be empty',
+      ]);
+    });
+    it('should throws exception 422 when email field is empty', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'test',
+          email: null,
+          password: 'TestPassword123',
+        })
+        .expect(422);
+      expect(res.body.statusCode).toBe(422);
+      expect(res.body.error).toBe('Unprocessable Entity');
+      expect(res.body.message).toStrictEqual([
+        'email must be an email',
+        'email must be a string',
+        'email should not be empty',
+      ]);
+    });
+    it('should throws exception 422 when password field is empty', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'test',
+          email: 'a@a.com',
+          password: null,
+        })
+        .expect(422);
+      expect(res.body.statusCode).toBe(422);
+      expect(res.body.error).toBe('Unprocessable Entity');
+      expect(res.body.message).toStrictEqual([
+        'password must be a string',
+        'password should not be empty',
+      ]);
+    });
+    it('should throws exception 422 when invalid field is passed', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'test',
+          email: 'a@a.com',
+          password: 'pass',
+          xpto: 'fake',
+        })
+        .expect(422);
+      expect(res.body.statusCode).toBe(422);
+      expect(res.body.error).toBe('Unprocessable Entity');
+      expect(res.body.message).toStrictEqual([
+        'property xpto should not exist',
+      ]);
+    });
+    it('should throws exception 422 when email field is not email type is empty', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/users')
+        .send({
+          name: 'myname',
+          email: 'notAvalidEmail',
+          password: 'TestPassword123',
+        })
+        .expect(422);
+      expect(res.body.statusCode).toBe(422);
+      expect(res.body.error).toBe('Unprocessable Entity');
+      expect(res.body.message).toStrictEqual(['email must be an email']);
+    });
   });
 });
