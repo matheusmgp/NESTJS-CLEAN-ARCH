@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Controller, Get, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { InvalidPasswordError } from '@/shared/application/errors/invalid-password-error';
 import { InvalidCredentialError } from '@/shared/application/errors/invalid-credential-error';
 import { InvalidCredentialErrorFilter } from '../../invalid-credential-error.filter';
 @Controller('stub')
@@ -30,8 +29,8 @@ describe('InvalidCredentialFilter e2e test', () => {
     expect(new InvalidCredentialErrorFilter()).toBeDefined();
   });
   it('should catch a InvalidCredentialError', () => {
-    return request(app.getHttpServer()).get('/stub').expect(403).expect({
-      statusCode: 403,
+    return request(app.getHttpServer()).get('/stub').expect(401).expect({
+      statusCode: 401,
       error: 'Invalid Credential',
       message: 'Invalid Credential data',
     });

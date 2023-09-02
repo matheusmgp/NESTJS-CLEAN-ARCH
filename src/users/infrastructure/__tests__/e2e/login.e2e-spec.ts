@@ -121,7 +121,7 @@ describe('UsersController e2e tests', () => {
         'UserModel not found using email notfound@email.com',
       );
     });
-    it('should throws exception 403 when email is incorrect', async () => {
+    it('should throws exception 401 when email is incorrect', async () => {
       const passwordHash = await hashProvider.generateHash(signinDto.password);
       const entity = new UserEntity(
         UserDataBuilder({ email: signinDto.email, password: passwordHash }),
@@ -134,8 +134,8 @@ describe('UsersController e2e tests', () => {
           email: signinDto.email,
           password: 'wrong-pass',
         })
-        .expect(403);
-      expect(res.body.statusCode).toBe(403);
+        .expect(401);
+      expect(res.body.statusCode).toBe(401);
       expect(res.body.error).toBe('Invalid Credential');
       expect(res.body.message).toStrictEqual('Invalid credentials');
     });
