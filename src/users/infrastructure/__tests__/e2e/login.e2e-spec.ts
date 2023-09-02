@@ -6,8 +6,6 @@ import { EnvConfigModule } from '@/shared/infrastructure/env-config/env-config.m
 import { UsersModule } from '../../users.module';
 import { DatabaseModule } from '@/shared/infrastructure/database/database.module';
 import request from 'supertest';
-import { UsersController } from '../../users.controller';
-import { instanceToPlain } from 'class-transformer';
 import { IUserRepository } from '@/users/domain/repositories/user.repository';
 import { applyGlobalConfig } from '@/global-config';
 import { UserEntity } from '@/users/domain/entities/user.entity';
@@ -122,6 +120,24 @@ describe('UsersController e2e tests', () => {
       expect(res.body.message).toStrictEqual(
         'UserModel not found using email notfound@email.com',
       );
+    });
+    it('should throws exception 403 when email is incorrect', async () => {
+      const passwordHash = await hashProvider.generateHash(signinDto.password);
+      const entity = new UserEntity(
+        UserDataBuilder({ email: signinDto.email, password: passwordHash }),
+      );
+      await repository.insert(entity);
+
+      const res = await request(app.getHttpServer())
+        .post('/users/login')
+        .send({
+          email: signinDto.email,
+          password: 'wrong-pass',
+        })
+        .expect(403);
+      expect(res.body.statusCode).toBe(403);
+      expect(res.body.error).toBe('Invalid Credential');
+      expect(res.body.message).toStrictEqual('Invalid credentials');
     });
   });
 });
