@@ -39,7 +39,7 @@ describe('UsersController e2e tests', () => {
   });
 
   describe('GET /users search', () => {
-    it('should return first 15 registers ordered by createAt desc', async () => {
+    it('should return first registers ordered by createAt desc', async () => {
       const createdAt = new Date();
       const entities: UserEntity[] = [];
       const arrange = Array(3).fill(UserDataBuilder({}));
@@ -61,7 +61,6 @@ describe('UsersController e2e tests', () => {
       const res = await request(app.getHttpServer())
         .get(`/users?${queryParams}`)
         .expect(200);
-      console.log(res.body);
       expect(Object.keys(res.body)).toStrictEqual(['data', 'meta']);
       expect(res.body).toStrictEqual({
         data: [...entities]
@@ -70,15 +69,48 @@ describe('UsersController e2e tests', () => {
         meta: { currentPage: 1, perPage: 15, lastPage: 1, total: 3 },
       });
     });
-
     it('should throws exception 422 when query params are invalid', async () => {
       const res = await request(app.getHttpServer())
         .get(`/users?fakeid=10`)
         .expect(422);
-      console.log(res.body);
       expect(res.body.statusCode).toBe(422);
       expect(res.body.error).toBe('Unprocessable Entity');
       expect(res.body.message).toEqual(['property fakeid should not exist']);
+    });
+    it('should return first registers with all params', async () => {
+      const entities: UserEntity[] = [];
+      const arrange = ['test', 'a', 'TEST', 'b', 'TeSt'];
+      arrange.forEach((element, index) => {
+        entities.push(
+          new UserEntity({
+            ...UserDataBuilder({}),
+            name: element,
+            email: `a${index}@a.com`,
+          }),
+        );
+      });
+      await prismaService.user.createMany({
+        data: entities.map(item => item.toJSON()),
+      });
+      const searchParams = {
+        page: 1,
+        perPage: 2,
+        sort: 'name',
+        sortDir: 'asc',
+        filter: 'TEST',
+      };
+      const queryParams = new URLSearchParams(searchParams as any).toString();
+
+      const res = await request(app.getHttpServer())
+        .get(`/users?${queryParams}`)
+        .expect(200);
+      expect(Object.keys(res.body)).toStrictEqual(['data', 'meta']);
+      expect(res.body).toStrictEqual({
+        data: [entities[0].toJSON(), entities[4].toJSON()].map(item =>
+          instanceToPlain(UsersController.userToResponse(item)),
+        ),
+        meta: { currentPage: 1, perPage: 2, lastPage: 2, total: 3 },
+      });
     });
   });
 });
